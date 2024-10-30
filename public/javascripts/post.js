@@ -1,51 +1,62 @@
-const DOMAIN = `http://localhost:3000/api/v1/`;
+document.addEventListener("DOMContentLoaded", () => {
+    const wrapperPosts = document.getElementById('wrapper-posts');
+    const searchInput = document.getElementById('searchInput');
 
-// fetch api
-const tbody = document.getElementById('wrapper-posts');
-const loadMore = document.getElementById('load-more');
-const loading = document.getElementById('spinner');
-let currentPage = 1;
-let totalPages;
+    // Fetch data for posts from API
+    async function fetchPosts() {
+        try {
+            const response = await fetch('http://localhost:3000/api/v1/posts/get-all-post'); // Update with your actual API URL
+            const posts = await response.json();
 
-const loadPosts = async () => {
-    await fetch(`${DOMAIN}posts/get-post-by-page?page=${currentPage}&limit=5`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            data.data.posts.map(items => {
-                // console.log(items.user_id.avatar);
-                let html = `<card-post post-id="${items._id}" img="${items.user_id.avatar !== ""  ? items.user_id.avatar : "https://placehold.co/50x50"}" title="${items.title}" content="${items.content}" user="${items.user_id.full_name}" time="${items.createdAt}" likes="${items.like_count}" comments="${items.comment_count}"></card-post>`;
-                tbody.insertAdjacentHTML('beforeend', html);
-            });
-            // preloader.style.display = 'none';
-            // pageNumber.value = numberPage;
-            if (currentPage < data.data.totalPages) {
-                loading.style.display = 'none';
-                loadMore.style.display = 'block'
+            // Check if data is available
+            if (posts && posts.data) {
+                displayPosts(posts.data);
             } else {
-                loadMore.style.display = 'none'
-                loading.style.display = 'none';
+                wrapperPosts.innerHTML = '<p>Không có bài viết nào!</p>';
             }
-            currentPage++;
-        })
-        .catch(error => {
-            console.error('There was a itemsblem with the fetch operation:', error);
+        } catch (error) {
+            console.error('Lỗi khi fetch dữ liệu:', error);
+            wrapperPosts.innerHTML = '<p>Đã xảy ra lỗi khi tải bài viết!</p>';
+        }
+    }
+
+    // Function to display posts
+    function displayPosts(posts) {
+        wrapperPosts.innerHTML = ''; // Clear any old content
+
+        posts.forEach(items => {
+            // Create HTML for each post using the <card-post> component
+            let html = `
+                <card-post 
+                    post-id="${items._id}" 
+                    img="https://placehold.co/50x50"
+                    title="${items.title}" 
+                    content="${items.content}" 
+                    time="${items.createdAt}" 
+                </card-post>
+            `;
+
+            // Insert HTML into the wrapperPosts container
+            wrapperPosts.insertAdjacentHTML('beforeend', html);
         });
-}
-// loadPosts();
+    }
 
- // Khi trang tải lần đầu, gọi API để hiển thị 5 bài viết đầu tiên
-window.addEventListener('DOMContentLoaded', (event) => {
-    loadPosts();  // Lần đầu tiên gọi API để lấy trang 1
-});
+    // Search functionality for posts
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const postCards = wrapperPosts.getElementsByTagName('card-post');
 
-// Gọi API khi người dùng nhấn vào nút 'Tải thêm'
-loadMore.addEventListener('click', function() {
-    loadMore.style.display = 'none';
-    loading.style.display = 'block';
-    loadPosts();  // Gọi API để tải thêm bài viết
+        Array.from(postCards).forEach(card => {
+            const title = card.getAttribute('title').toLowerCase();
+            const content = card.getAttribute('content').toLowerCase();
+            if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Call fetchPosts when the page has loaded
+    fetchPosts();
 });

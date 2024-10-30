@@ -1,12 +1,18 @@
 var express = require('express');
 const managerRouter = require('./managerRoutes');
 var router = express.Router();
+const { isAuthenticated, redirectToHomeIfLoggedIn, isAuthorized } = require('../middlewares/authMiddleware');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Express' });
+
+router.get('/login', function(req, res, next) {
+  res.render('login', { title: 'Login' });
 });
-router.use('/', managerRouter);
 
-
+router.use([ '/post', '/user', '/create_post'], isAuthenticated);
+router.get('/',isAuthenticated);
+router.use("/", managerRouter);
+// router.get('/dashboard', function(req, res, next) {
+//   res.render('dashboard', { title: 'Dashboard' });
+// });
 module.exports = router;
