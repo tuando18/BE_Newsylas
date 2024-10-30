@@ -1,39 +1,65 @@
-document.getElementById('loginForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const spinner = document.querySelector('.spinner-border');
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+    const buttonLogin = document.getElementById("buttonLogin");
+    const errorMessage = document.getElementById("errorMessage");
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("password");
     const DOMAIN = `http://localhost:3000/api/v1`;
 
-    spinner.classList.remove('d-none'); // Show spinner
-
-    try {
-        const response = await fetch(`${DOMAIN}/users/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-
-        const result = await response.json();
-        spinner.classList.add('d-none'); // Hide spinner
-
-        if (response.ok) {
-            // Redirect to dashboard on success
-            window.location.href = '/dashboard';
-            console.log(111111);
+    // Toggle password visibility
+    togglePassword.addEventListener("click", () => {
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            togglePassword.textContent = "🙈"; // Change to "hide" icon
         } else {
-            // Show error modal with message
-            showErrorModal(result.message || 'Invalid username or password.');
+            passwordField.type = "password";
+            togglePassword.textContent = "👁️"; // Change to "show" icon
         }
-    } catch (error) {
-        console.error('Login error:', error); // Add error log for debugging
-        showErrorModal('An error occurred. Please try again later.');
-    }
-});
+    });
 
-function showErrorModal(message) {
-    const errorModal = new bootstrap.Modal(document.getElementById('loginErrorModal'));
-    document.getElementById('errorMessage').textContent = message;
-    errorModal.show();
-}
+    // Handle form submission
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        buttonLogin.disabled = true;
+        buttonLogin.querySelector(".spinner-border").classList.remove("d-none");
+
+        const formData = {
+            username: loginForm.username.value,
+            password: loginForm.password.value,
+        };
+
+        try {
+            const response = await fetch(`${DOMAIN}/users/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.status === 200) {
+                    window.location.href = "/";
+                } else {
+                    errorMessage.innerText = `*${result.message}`;
+                    errorMessage.style.display = "inline-block";
+                }
+            } else if (response.status === 401) {
+                // Display error for unauthenticated access
+                errorMessage.textContent = "Authentication required. Please log in.";
+                errorMessage.style.display = "inline-block";
+            } else {
+                const text = await response.text();
+                console.error("Unexpected error:", text);
+                errorMessage.textContent = "An unexpected error occurred. Please try again.";
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            errorMessage.textContent = "An unexpected error occurred. Please try again.";
+        } finally {
+            buttonLogin.disabled = false;
+            buttonLogin.querySelector(".spinner-border").classList.add("d-none");
+        }
+    });
+});
