@@ -42,3 +42,37 @@ main {
 }
 
 
+.action-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.icons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #3b5998;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.btn-post {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-post:hover {
+    background-color: #0056b3;
+}

@@ -3,31 +3,14 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const session = require('express-session');
-const dotenv = require('dotenv');
 const http = require('http');
 
 const routes1 = require('./routes/index');
 const routes2 = require('./routes/api/routes');
-const connectDB = require('./config/db');
-
-dotenv.config();
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
-
-// Middleware
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// app.js
-// app.set('view engine', 'hbs'); // hoặc 'hbs' nếu dùng Handlebars
-// app.set('views', path.join(__dirname, 'views')); // Thư mục chứa file views
+// view engine setup
 const exphbs = require('express-handlebars');
 //
 app.engine('hbs', exphbs.engine({
@@ -39,27 +22,46 @@ app.engine('hbs', exphbs.engine({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// Session middleware
+// Middleware
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/components', express.static(path.join(__dirname, 'components')));
+
+// khai báo
+const database = require('./config/db');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+dotenv.config();
+// sử dụng
+database();
+//======================================================//
+// Cấu hình session middleware
 app.use(session({
   secret: process.env.SECRETKEY,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }, // Set to true if using HTTPS
+  cookie: {
+    maxAge: 1000 * 60 * 60 // Thời gian tồn tại của session (ở đây là 1 giờ)
+}
 }));
-
-// // Redirect root URL to the login page
-// app.get('/', (req, res) => {
-//   res.redirect('/api/v1/login'); // Change this path based on your actual login route
-// });
 
 // Routes
 app.use('/', routes1);
 app.use('/', routes2);
 
-// Catch 404 errors
+// Cấu hình body-parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 // Bắt lỗi 404
 app.use((req, res, next) => {
-  next(createError(404));
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
 });
 
 // Xử lý lỗi

@@ -1,4 +1,4 @@
-
+html,
 body {
   overflow-y: hidden;
 }
@@ -37,9 +37,9 @@ aside {
 }
 
 article {
-  flex: 4;
+  flex: 6;
   overflow: auto;
-  /* Thêm thanh cuộn nếu cần thiết */
+ 
 }
 
 .circle {
