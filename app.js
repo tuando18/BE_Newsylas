@@ -4,15 +4,23 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
+const cors = require('cors'); // Thêm dòng này
 
 const routes1 = require('./routes/index');
 const routes2 = require('./routes/api/routes');
 
 const app = express();
 
+// Thêm cấu hình CORS
+app.use(cors({
+  origin: 'http://localhost:5173', // URL frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép
+  credentials: true, // Cho phép gửi cookie nếu cần
+  allowedHeaders: ['Content-Type'], // Tiêu đề cho phép
+}));
+
 // view engine setup
 const exphbs = require('express-handlebars');
-//
 app.engine('hbs', exphbs.engine({
   extname: 'hbs',
   defaultLayout: 'layout',
@@ -30,23 +38,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/components', express.static(path.join(__dirname, 'components')));
 
-// khai báo
+// Khai báo
 const database = require('./config/db');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config();
-// sử dụng
 database();
-//======================================================//
+
 // Cấu hình session middleware
 app.use(session({
   secret: process.env.SECRETKEY,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 // Thời gian tồn tại của session (ở đây là 1 giờ)
-}
+    maxAge: 1000 * 60 * 60 // 1 giờ
+  }
 }));
 
 // Routes
@@ -69,14 +76,13 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
-  res.render('error'); // Đảm bảo bạn có tệp error.hbs để hiển thị
+  res.render('error'); // Đảm bảo có file error.hbs để hiển thị
 });
 
-
-// Create HTTP server
+// Tạo HTTP server
 const server = http.createServer(app);
 
-// Start the server
+// Khởi động server
 server.listen(3000, () => {
   console.log(`Server is running on port 3000`);
 });

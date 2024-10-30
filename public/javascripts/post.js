@@ -1,3 +1,5 @@
+const DOMAIN = `http://localhost:3000/api/v1`;
+
 document.addEventListener("DOMContentLoaded", () => {
     const wrapperPosts = document.getElementById('wrapper-posts');
     const searchInput = document.getElementById('searchInput');
@@ -5,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch data for posts from API
     async function fetchPosts() {
         try {
-            const response = await fetch('http://localhost:3000/api/v1/posts/get-all-post'); // Update with your actual API URL
+            const response = await fetch(`${DOMAIN}/posts/get-all-post`); // Update with your actual API URL
             const posts = await response.json();
 
             // Check if data is available
