@@ -83,4 +83,16 @@ managerRouter.use("/post-detail/:id", function (req, res, next) {
         admin: admin,    // Truyền thông tin admin nếu cần sử dụng trong view
     });
 });
+
+managerRouter.use("/token", function (req, res, next) {
+    const admin = req.session.admin;
+    console.log(admin);
+
+    const drivers = [];
+    const content = renderPartial('token_account');
+    res.render('dashboard', {
+        title: 'Token Acccount',
+        body: content,
+    });
+});
 module.exports = managerRouter;

@@ -9,7 +9,7 @@ router.get('/login', function(req, res, next) {
   res.render('login', { title: 'Login' });
 });
 
-router.use([ '/post', '/user', '/create_post'], isAuthenticated);
+router.use([ '/post', '/user', '/create_post','/token'], isAuthenticated);
 router.get('/',isAuthenticated);
 router.use("/", managerRouter);
 // router.get('/dashboard', function(req, res, next) {
