@@ -40,13 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const result = await response.json();
                 if (result.status === 200) {
-                    window.location.href = "/";
+                    if (result.data.role === "admin") { // Check if the role is admin
+                        window.location.href = "/"; // Redirect to admin dashboard
+                    } else {
+                        errorMessage.innerText = "*You do not have admin permissions.";
+                        errorMessage.style.display = "inline-block";
+                    }
                 } else {
                     errorMessage.innerText = `*${result.message}`;
                     errorMessage.style.display = "inline-block";
                 }
             } else if (response.status === 401) {
-                // Display error for unauthenticated access
                 errorMessage.textContent = "Authentication required. Please log in.";
                 errorMessage.style.display = "inline-block";
             } else {

@@ -8,5 +8,6 @@ const UserController = require('../../controllers/api/userContronller');
 //     res.send(2004);
 // });
 router.post('/login', new UserController().login);
+router.post('/register', new UserController().register);
 
 module.exports = router;
