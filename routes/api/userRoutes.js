@@ -9,5 +9,6 @@ const UserController = require('../../controllers/api/userContronller');
 // });
 router.post('/login', new UserController().login);
 router.post('/register', new UserController().register);
+router.post('/save-wallet', new UserController().saveWallet);
 
 module.exports = router;

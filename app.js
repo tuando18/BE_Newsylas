@@ -50,7 +50,7 @@ database();
 app.use(session({
   secret: process.env.SECRETKEY,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     maxAge: 1000 * 60 * 60 // 1 giờ
   }

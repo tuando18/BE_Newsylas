@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     publicKey: { type: String, default: null },  // Thêm trường publicKey của ví Solana
     solanaTokenBalance: { type: Number, default: 0 }  // Thêm trường lưu số token Solana
-});
+  });
+  
 // // Hash the password before saving
 // userSchema.pre('save', async function (next) {
 //     if (this.isModified('password')) {
