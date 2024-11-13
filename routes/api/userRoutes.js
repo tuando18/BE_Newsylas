@@ -7,8 +7,9 @@ const UserController = require('../../controllers/api/userContronller');
 //     console.log(111111);
 //     res.send(2004);
 // });
+router.get('/get-all-user', new UserController().getAllUsers); 
 router.post('/login', new UserController().login);
 router.post('/register', new UserController().register);
-router.post('/save-wallet', new UserController().saveWallet);
+router.put('/:userId/add-points', new UserController().addPoints);
 
 module.exports = router;
