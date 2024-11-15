@@ -11,5 +11,6 @@ router.get('/get-all-user', new UserController().getAllUsers);
 router.post('/login', new UserController().login);
 router.post('/register', new UserController().register);
 router.put('/:userId/add-points', new UserController().addPoints);
+router.get('/get-user-by-id/:userId', new UserController().getUserById); 
 
 module.exports = router;

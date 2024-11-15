@@ -66,6 +66,21 @@ class UserController {
     }
   };
 
+  getUserById = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const user = await new UserService().getUserById(userId);
+      if (user && user.status === 200) {
+        return res.json(user);
+      } else {
+        return res.status(404).json(HttpResponse.fail('User not found'));
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(HttpResponse.error('Failed to fetch user by ID'));
+    }
+  };
+
 }
 
 module.exports = UserController;

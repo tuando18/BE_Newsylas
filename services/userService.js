@@ -70,6 +70,19 @@ class UserService {
       console.error("Error fetching users:", error);
       throw new Error("Failed to fetch users");
     }
+    
+  };
+  getUserById = async (userId) => {
+    try {
+      const user = await Users.findById(userId, { password: 0 }); // Không lấy trường password để bảo mật
+      if (!user) {
+        return HttpResponse.fail('User not found');
+      }
+      return HttpResponse.success(user);
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      return HttpResponse.error(error);
+    }
   };
 
 }
