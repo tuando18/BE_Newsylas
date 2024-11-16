@@ -12,5 +12,6 @@ router.post('/login', new UserController().login);
 router.post('/register', new UserController().register);
 router.put('/:userId/add-points', new UserController().addPoints);
 router.get('/get-user-by-id/:userId', new UserController().getUserById); 
+router.post('/save-wallet', new UserController().saveWallet);
 
 module.exports = router;

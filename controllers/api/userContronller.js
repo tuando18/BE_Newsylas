@@ -80,7 +80,31 @@ class UserController {
       return res.status(500).json(HttpResponse.error('Failed to fetch user by ID'));
     }
   };
-
+  saveWallet = async (req, res) => {
+    const { publicKey } = req.body;
+  
+    // Kiểm tra session admin
+    console.log("Session Admin (Before Update):", req.session.admin);
+  
+    if (!req.session.admin) {
+      return res.status(401).json({ message: 'Unauthorized, please login.' });
+    }
+  
+    const userId = req.session.admin._id;  // Sử dụng _id thay vì id
+    console.log("User ID from Session:", userId);
+  
+    try {
+      const data = await new UserService().updateWalletInfo(userId, publicKey);
+      if (data && data.status === 200) {
+        return res.json(HttpResponse.success({ message: 'Wallet info saved successfully' }));
+      } else {
+        return res.json(HttpResponse.fail({ message: 'Failed to save wallet info' }));
+      }
+    } catch (error) {
+      console.log("Error saving wallet info:", error);
+      return res.json(HttpResponse.error(error));
+    }
+  };
 }
 
 module.exports = UserController;

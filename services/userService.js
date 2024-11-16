@@ -84,7 +84,27 @@ class UserService {
       return HttpResponse.error(error);
     }
   };
-
+  updateWalletInfo = async (userId, publicKey) => {
+    console.log("Updating wallet for user:", userId);
+    console.log("Public Key:", publicKey);
+  
+    try {
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        { publicKey},
+        { new: true }  // Trả về tài liệu đã cập nhật
+      );
+      if (updatedUser) {
+        console.log("Updated user:", updatedUser);
+        return HttpResponse.success(updatedUser);
+      } else {
+        return HttpResponse.fail({ message: 'User not found' });
+      }
+    } catch (error) {
+      console.log("Error in updating wallet:", error);
+      return HttpResponse.error(error);
+    }
+  };
 }
 
 module.exports = UserService;

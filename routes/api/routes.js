@@ -3,7 +3,7 @@ var router = express.Router();
 
 const userRoutes = require('./userRoutes');
 const postRoutes = require('./postRoutes');
-const tokenRoutes = require('./tokenRoutes');
+const tokenRoutes = require('./solanaRoutes');
 
 /* GET home page. */
 router.use('/api/v1/users', userRoutes);
