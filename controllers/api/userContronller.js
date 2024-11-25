@@ -55,6 +55,22 @@ class UserController {
       return res.json(HttpResponse.error(error));
     }
   };
+
+  addPointsCheckin = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const data = await new UserService().addPointsCheckin(userId);
+      if (data && data.status === 200) {
+        return res.json(HttpResponse.success(data));
+      } else {
+        return res.status(404).json(HttpResponse.fail('Failed to add points.'));
+      }
+    } catch (error) {
+      console.log(error);
+      return res.json(HttpResponse.error(error));
+    }
+  };
+  
   // Hàm để lấy tất cả người dùng
   getAllUsers = async (req, res) => {
     try {

@@ -61,6 +61,26 @@ class UserService {
       return HttpResponse.error(error);
     }
   };
+
+  addPointsCheckin = async (userId, points = 10) => {
+    try {
+      const user = await Users.findById(userId);
+      if (!user) {
+        return HttpResponse.fail('User not found');
+      }
+
+      // Cộng điểm cho người dùng
+      user.point += points;
+      await user.save();
+
+      return HttpResponse.success({ message: `Points added successfully. New point total: ${user.point}` });
+    } catch (error) {
+      console.log(error);
+      return HttpResponse.error(error);
+    }
+  };
+
+  
   // Hàm để lấy tất cả người dùng
   getAllUsers = async () => {
     try {
