@@ -44,7 +44,7 @@ class UserService {
   };
 
   // Thêm điểm cho người dùng
-  addPoints = async (userId, points = 5) => {
+  addPoints = async (userId, points = 100) => {
     try {
       const user = await Users.findById(userId);
       if (!user) {
@@ -62,7 +62,7 @@ class UserService {
     }
   };
 
-  addPointsCheckin = async (userId, points = 10) => {
+  addPointsCheckin = async (userId, points = 100) => {
     try {
       const user = await Users.findById(userId);
       if (!user) {
